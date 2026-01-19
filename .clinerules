@@ -1,0 +1,180 @@
+# SafeHaven Code Quality Rules
+
+## Critical Safety Rules (LIFE-SAFETY APPLICATION)
+
+- All async functions MUST have try-catch error handling - NO EXCEPTIONS
+- All error scenarios must show user-friendly error messages
+- Never ignore errors in catch blocks - always log and handle
+- Escalation logic must be thoroughly tested before production
+- Vacation mode must be checked BEFORE any escalation logic
+- Device activity checks must handle null/undefined timestamps
+- All database operations must handle connection failures gracefully
+- Background tasks must have fallback mechanisms
+- Notification failures must be logged and retried
+
+## Code Quality Rules
+
+- No unused imports or variables
+- No console.logs in production code (use proper logging)
+- All functions must have explicit return types
+- Maximum function length: 75 lines (50 for complex logic)
+- No deeply nested code (max 3 levels of nesting)
+- Extract complex conditions into named variables
+- Use early returns to reduce nesting
+
+## TypeScript Rules
+
+- Enable strict mode at all times
+- No 'any' types without explicit justification comment
+- All props must have explicit types via interfaces
+- Use interfaces for objects, types for unions/intersections
+- All async functions must return Promise<T> explicitly
+- Use const assertions for literal types
+- Prefer readonly for props that shouldn't mutate
+- Use discriminated unions for complex state
+
+## React Native Rules
+
+- Use functional components with hooks only - NO class components
+- All components must use TypeScript with proper prop interfaces
+- Use StyleSheet.create for all styles - NO inline styles
+- Touch targets must be minimum 60x60pt for elderly users
+- Text must have minimum font size of 16pt (20pt+ for primary actions)
+- Colors must have sufficient contrast ratio (WCAG AA minimum)
+- Handle keyboard with KeyboardAvoidingView on forms
+- Use Platform.select() or Platform.OS for platform-specific code
+- Always handle loading states for async operations
+- Always handle error states for async operations
+- Always handle empty states for lists
+- Destructure props in function signature
+
+## Service Layer Rules
+
+- Services contain business logic only - NO UI, NO database queries
+- Repositories contain database access only - NO business logic
+- All service methods must return structured responses: { success: boolean; data?: T; error?: string }
+- Services must validate inputs before calling repositories
+- Services must handle repository errors and return user-friendly messages
+- Use dependency injection for testability
+
+## Database/Repository Rules
+
+- All repository methods must handle Supabase errors
+- Never expose raw database errors to users
+- Use specific error messages (not generic "database error")
+- All queries must respect Row-Level Security (RLS)
+- Use database transactions for multi-step operations
+- Handle null values from database gracefully
+- Validate data before inserting into database
+
+## Naming Conventions
+
+- Files: kebab-case (check-in-service.ts, monitored-user-screen.tsx)
+- Components: PascalCase (CheckInButton, MonitoredPersonCard)
+- Functions: camelCase (createCheckIn, hasCheckedInToday)
+- Constants: UPPER_SNAKE_CASE (MAX_CONTACTS, ESCALATION_THRESHOLD_HOURS)
+- Types/Interfaces: PascalCase (User, CheckIn, ServiceResponse)
+- Private class methods: camelCase with _ prefix (_validateInput)
+- React Native styles: camelCase (buttonPrimary, textLarge)
+
+## Error Handling Patterns
+
+- Wrap ALL async operations in try-catch
+- Log errors with context: console.error('ServiceName.methodName error:', error)
+- Return structured error responses from services
+- Show user-friendly error messages in UI
+- Use Alert.alert() for critical errors requiring user attention
+- Use Toast/Snackbar for non-critical feedback
+- Handle network errors specifically (timeout, offline)
+- Handle permission errors with actionable messages
+- Never crash the app - graceful degradation always
+
+## Testing Rules (Future)
+
+- All critical user flows must have integration tests
+- Escalation logic must have comprehensive unit tests
+- Device activity detection must be tested on physical devices
+- Mock Supabase calls in tests
+- Test error scenarios, not just happy paths
+- Test with vacation mode ON and OFF
+- Test race conditions (user checking in during escalation detection)
+- Test 24-hour escalation with time mocking
+
+## Documentation Rules
+
+- All exported functions/components must have JSDoc comments
+- Complex business logic must have inline comments explaining WHY
+- Document assumptions (e.g., "Assumes user is authenticated")
+- Document safety-critical decisions
+- Update CLAUDE.md when discovering new patterns
+- Keep PROJECT-SPEC.md current with requirement changes
+
+## Performance Rules
+
+- Use React.memo for expensive components (dashboard cards)
+- Use useMemo for expensive calculations
+- Use useCallback for callbacks passed to child components
+- Debounce search inputs (300ms minimum)
+- Paginate long lists (use FlatList with pagination)
+- Lazy load screens with React Navigation
+- Optimize images (compress, use appropriate sizes)
+- Cache API responses where appropriate
+- Avoid unnecessary re-renders
+
+## Accessibility Rules (CRITICAL for Elderly Users)
+
+- Minimum touch target size: 60x60pt (80x80pt preferred for primary actions)
+- Minimum font size: 16pt for body text, 20pt+ for primary actions
+- High contrast colors (4.5:1 ratio minimum for normal text, 3:1 for large text)
+- Large, clear fonts (no thin weights)
+- Simple language (avoid jargon)
+- Clear visual feedback for all interactions
+- Support iOS Dynamic Type (accessibility font sizes)
+- Test with iOS Accessibility Inspector
+
+## Security Rules
+
+- Never commit .env files to git
+- Store sensitive data in environment variables
+- Use Supabase RLS for all database access
+- Validate all user input before processing
+- Sanitize data before displaying (prevent XSS)
+- Use HTTPS for all network requests
+- Store tokens securely (handled by Supabase SDK)
+- Log security-relevant events (failed logins, permission changes)
+
+## Git Commit Rules
+
+- Use conventional commits format: type(scope): subject
+- Types: feat, fix, docs, style, refactor, test, chore
+- Scope: auth, checkin, monitoring, escalation, notifications, ui, etc.
+- Subject: Imperative mood, lowercase, no period
+- Examples:
+  - feat(monitoring): add person detail screen with safety status
+  - fix(escalation): prevent false alarms during vacation mode
+  - test(checkin): add validation tests for double check-in prevention
+
+## SafeHaven-Specific Rules
+
+- Device activity is PRIMARY safety signal - check-ins are SECONDARY
+- Always check vacation mode before escalation logic
+- Log all escalation decisions to database for audit trail
+- Use critical alerts only for genuine emergencies (24+ hour inactivity)
+- Test all safety-critical features on physical iOS devices
+- Handle background task failures with server-side backup
+- Monitor role sees dashboard, monitored role sees simple check-in screen
+- Onboarding flow assumes adult child setting up for parent
+- Never show escalation notifications to monitored person (only to monitors)
+
+## Pre-Commit Checklist
+
+- [ ] Run TypeScript check: npx tsc --noEmit
+- [ ] Run linter: npm run lint
+- [ ] No console.logs in production code
+- [ ] All new code has error handling
+- [ ] All async operations have try-catch
+- [ ] User-facing strings are clear and friendly
+- [ ] Touch targets meet 60x60pt minimum
+- [ ] Code follows naming conventions
+- [ ] Complex logic has explanatory comments
+- [ ] No secrets in committed code
