@@ -1,0 +1,39 @@
+{
+  "commands": {
+    "/onboard": "Read these files IN ORDER and then provide a brief summary: 1) CHANGELOG.md (current status and next tasks), 2) PLAN.md (implementation strategy), 3) CLAUDE.md (coding standards). After reading, summarize: current phase and milestone, what was last completed, what's next, any blockers. Then ask: 'Ready to continue with the next task?'",
+
+    "/status": "Read CHANGELOG.md and show ONLY the 'NEXT UP' section. Tell me what tasks are pending and what's the next priority.",
+
+    "/full-context": "Read ALL project documentation in order: CHANGELOG.md, PLAN.md, PROJECT-SPEC.md, CLAUDE.md, .clinerules. Provide comprehensive summary of project status, requirements, and standards. Use this when you need complete context.",
+
+    "/standards": "Read CLAUDE.md and .clinerules. Summarize the key coding standards, patterns, and safety-critical rules for SafeHaven. Use before implementing features.",
+
+    "/plan": "Read PLAN.md and show the details for milestone: $1. If no milestone specified, show current milestone from CHANGELOG.md.",
+
+    "/update-changelog": "Update CHANGELOG.md with today's accomplishments. Move completed items from 'NEXT UP' to a new changelog entry. Ask me what we accomplished, what decisions were made, what files were created/modified, and what's next.",
+
+    "/commit-docs": "Stage and commit all documentation files (CHANGELOG.md, PLAN.md, PROJECT-SPEC.md, CLAUDE.md) with a descriptive docs commit message, then push to GitHub.",
+
+    "/commit-feature": "Stage all changes, create a commit with message format 'feat($1): $2', and push to GitHub. Example: /commit-feature auth add role selection to sign up",
+
+    "/commit-fix": "Stage all changes, create a commit with message format 'fix($1): $2', and push to GitHub. Example: /commit-fix escalation prevent false alarms during vacation mode",
+
+    "/test-ios": "Start the Expo development server and open in iOS simulator. If physical device needed, remind user to connect device first.",
+
+    "/check-quality": "Run all quality checks: 1) TypeScript type check (npx tsc --noEmit), 2) ESLint (npm run lint), 3) Check for console.logs in src/ directory. Report any issues found.",
+
+    "/milestone": "Show the details for milestone $1 from PLAN.md. List all tasks, estimated time, and acceptance criteria. If already completed, show from CHANGELOG.md.",
+
+    "/next": "Look at CHANGELOG.md 'NEXT UP' section, read relevant context from PLAN.md and CLAUDE.md for that task, then start working on the highest priority task. Use this to automatically continue where we left off.",
+
+    "/db-schema": "Read PROJECT-SPEC.md and show the complete database schema with all tables, fields, and relationships. Highlight any new tables that need migrations.",
+
+    "/safety-check": "Review the current code changes against safety-critical rules in .clinerules. Check: error handling for all async operations, vacation mode checks in escalation logic, user-friendly error messages, device activity validation. Report any safety concerns.",
+
+    "/new-service": "Create a new service in src/services/ named $1Service.ts with: proper TypeScript interfaces, try-catch error handling, structured response type, JSDoc comments. Also create corresponding repository in src/repositories/.",
+
+    "/new-screen": "Create a new screen component in src/screens/ named $1Screen.tsx with: TypeScript props interface, StyleSheet styles (no inline), error handling, loading states, and add to navigation setup.",
+
+    "/new-component": "Create a new component in src/components/ named $1.tsx with: TypeScript props interface, StyleSheet styles, proper touch target sizes (60pt minimum), high contrast colors, JSDoc comments."
+  }
+}
